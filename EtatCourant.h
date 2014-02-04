@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 05/02/14
 
 #define NBPOSG 69
 // Nombre de positions gagnantes

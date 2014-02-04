@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 04/02/14
 
 #include "EtatCourant.h"
 #include <iostream>
@@ -16,7 +16,7 @@ EtatCourant::EtatCourant(void)
 	ifstream fichier("posg.txt",ios::in);
     if(fichier)
     {
-      for(int indice=0;indice<NBPOSG;indice++) fichier>>this->posG[indice];     
+      for(int indice=0;indice<NBPOSG;indice++) fichier>>this->posG[indice];
       fichier.close();
     }
     else cerr << "Erreur" << endl;
@@ -40,7 +40,6 @@ Colonne EtatCourant::getCol(int l)
 
 uint64_t EtatCourant::getEtat(int i)
 {
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	if(i==1) return this->etat1;
 	else return this->etat2;
 }
@@ -52,13 +51,16 @@ bool EtatCourant::isGagne(void)
 	for(int indice=0;indice<NBPOSG;indice++)
 	{
 		// Chaque grille est représentée par un entier dont la décomposition
-		// binaire donne les cases où un joureur a ses pions.
+		// binaire donne les cases où un joueur a mis ses pions.
 		// On effectue un "et" binaire entre une position gagnante et la grille actuelle.
 		// Ceci revient à faire un masque en se focalisant uniquement sur les cases
-		// qui compose la position gagnante à tester.
+		// qui composent la position gagnante (de 4 cases à tester).
 		// Si ce "et" coincide avec la position gagnante, le jeu est terminé.
-		if((this->posG[indice]&&this->etat1)==this->posG[indice]) res=true;  
-		//cout<<"Gagne!!\n";	// à virer ensuite.
+		if((this->posG[indice]&&this->etat1)==this->posG[indice])
+		{
+			res=true;  
+			cout<<"Gagne!!\n";
+		}
 	}
 	return res;
 }
