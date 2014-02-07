@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 05/02/14
 
 #pragma once
 #include <string>
@@ -8,7 +8,7 @@ class Pion
 {
 	// Attributs
 	private:
-	static int compteur;		// Compteur servant à numéroter tous les points.
+	static int compteur;		// Compteur servant à numéroter tous les pions.
 	static int nbPionJaune;		// Compteur de pions jaunes.
 	static int nbPionRouge;		// Compteur de pions rouges.
 	int num;					// Numéro du pion 

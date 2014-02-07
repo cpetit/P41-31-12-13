@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 07/02/14
 
 #include <iostream>
 #include "Colonne.h"
@@ -63,8 +63,11 @@ void Colonne::ajoutPion(Pion cePion)
 // EnlevePion est nécessaire pour annuler un coup.
 void Colonne::enlevePion(void)
 {
-	this->listeCase[nbPion].setVide();
-	this->nbPion--;
+	if(this->nbPion>0)
+	{
+		this->listeCase[nbPion-1].setVide();
+		this->nbPion--;
+	}
 }
 
 void Colonne::info(void)

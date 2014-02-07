@@ -1,4 +1,4 @@
-// Version du 04/02/2014
+// Version du 07/02/2014
 
 #pragma once
 #include <windows.h>
@@ -18,6 +18,7 @@ class Partie
 	private:
 	string joueur1;
 	string joueur2;
+	string gagnant;
 	vector<int> historique;
 	bool gagne;
 	int nbCoup;
@@ -30,9 +31,10 @@ class Partie
 	public:
 	Partie(void);
 	~Partie(void);
+	string getGagnant(void);
 	int getNbCoup(void);
 	void joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,char*c);
 	void annuleCoup(bool*effectue,int*i,int*j);
-	void affiche(void);
+	void info(void);
 };
 

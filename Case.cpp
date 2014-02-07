@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 05/02/14
 
 #include "Case.h"
 #include <iostream>
@@ -22,8 +22,6 @@ string Case::getEtat(void)
 
 // Pas de setter sur etat car une case est
 // toujours créée vide par le constructeur
-// et ne change d'état que lorsqu'un pion lui
-// est affecté.
 
 Pion Case::getPion(void)
 {
@@ -40,7 +38,8 @@ void Case::setVide(void)
 {
 	// Si l'on annule un coup, une case peut être remise dans l'état vide.
 	// On pourrait créer un pion vide pour le mettre dedans et "vider" ainsi la case,
-	// mais cela est sans intérêt. On se contente donc de mettre l'état à vide.
+	// mais cela est sans intérêt et n'est pas cohérent avec la classe pion.
+	// On se contente donc de mettre l'état à vide.
 	// L'ancien pion a été remis dans le stock du joueur correspondant et on ne
 	// doit donc plus accéder à this->cePion.
 	this->etat="vide";

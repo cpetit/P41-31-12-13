@@ -1,4 +1,4 @@
-// Version du 04/02/14
+// Version du 07/02/14
 
 #include "Fenetre.h"
 #include "Partie.h"
@@ -10,6 +10,7 @@
 Partie maPartie;
 int valeurMenu;
 char couleurCase[HAUTEUR][LARGEUR];
+bool* partieEnCours= new bool(true);
 
 // Constructeur et destructeur (par défaut).
 Fenetre::Fenetre(void)
@@ -18,6 +19,7 @@ Fenetre::Fenetre(void)
 
 Fenetre::~Fenetre(void)
 {
+	delete(partieEnCours);
 }
 
 // Méthodes
@@ -31,6 +33,7 @@ void Fenetre::ouvrir(int argc, char** argv)
 
 	// Prototypes des fonctions qui seront appelées par les fonctions callback
 	// lorsqu'un évènement se déclenche.
+	// Ces prototypes sont imposés et non modifiables.
 	void affiche(void);
 	void handleButtons(int button, int state, int x, int y);
 	void handleResize(int w, int h);
@@ -63,8 +66,7 @@ void Fenetre::ouvrir(int argc, char** argv)
 	glutAddMenuEntry("Charger partie.",1) ;
 	glutAddMenuEntry("Sauvegarder partie.",2) ;
 	glutAddMenuEntry("Annuler coup.",3) ;
-	glutAddMenuEntry("Rejouer coup.",4) ;
-	glutAddMenuEntry("Nouvelle partie.",5) ;
+	glutAddMenuEntry("Nouvelle partie.",4) ;
 	glutAttachMenu(GLUT_RIGHT_BUTTON) ;
 	//_____________________________________________
 
@@ -80,6 +82,7 @@ void Fenetre::ouvrir(int argc, char** argv)
 	// Lancement de la boucle principale d'affichage et de
 	// la machine à états opengl.
 	glutMainLoop();
+	delete partieEnCours;
 }
 
 
@@ -87,12 +90,11 @@ void Fenetre::ouvrir(int argc, char** argv)
 // Cette fonction est automatiquement appelée (via la 
 // fonction callback glutDisplayFunc) dès qu'un affichage
 // est à effectuer.
+
 void affiche()
 {
   int i;
   void annuleCoup(void); // prototype d'annuleCoup
-
-  // GLfloat tabDisque[HAUTEUR][LARGEUR][50*3];
   
   glClearColor(0, 0, 1, 0);		// Couleur de fond
   glClear(GL_COLOR_BUFFER_BIT);	// Nettoyage de la fenêtre 
@@ -104,8 +106,7 @@ void affiche()
 	case 1: cout<<"Charger."<<endl;break;
 	case 2: cout<<"Sauver."<<endl;break;
 	case 3: annuleCoup();break;
-	case 4: cout<<"Rejouer."<<endl;break;
-	case 5: cout<<"Nouvelle."<<endl;break;
+	case 4: cout<<"Nouvelle."<<endl;break;
   }
   valeurMenu=0;
  
@@ -126,7 +127,7 @@ void affiche()
   glEnd();
   glFlush();
 
-  // Tracé initial des cases.
+  // Tracé des cases.
   glEnableClientState(GL_NORMAL_ARRAY);
   for(int k=0;k<LARGEUR;k++)
   {
@@ -140,6 +141,9 @@ void affiche()
 		glEnd();
 		glFlush();
 	}
+
+	//Tests pour utiliser des quadriques à la place des polygones.
+	//pour une version ultérieure.
 	//GLUquadricObj *circle = gluNewQuadric ();
 	//if (circle != 0) gluQuadricDrawStyle(circle, GLU_FILL); 
 	//gluDisk (nomDuDisque,centre,rayon,rayonTrouCentral,1);
@@ -150,34 +154,46 @@ void affiche()
 
 void handleButtons(int button, int state, int x, int y)
 {
-  int i, j;
-  float dx, dy; 
+	int i, j;
+	float dx, dy; 
+	bool* ok= new bool;
+	int* coup=new int;
+	int* ligne=new int;
+	char* c=new char;
+	*ok=true;
 
-  bool* partieEnCours= new bool;
-  bool* ok= new bool;
-  int* coup=new int;
-  int* ligne=new int;
-  char* c=new char;
-
-  *partieEnCours=true;
-  *ok=true;
-
+	// Où se trouve la souris sur la grille ?
 	if(button != GLUT_LEFT_BUTTON || state != GLUT_UP) return;  
 	y = Height - y;
 	dy = Height/(float)HAUTEUR;
 	dx = Width/(float)LARGEUR;
 	i = (int)(y/dy);
 	j = (int)(x/dx); 
-	cout<<"clic sur la case ("<<j<<","<<i<<").\n";
+
+	// Un clic sur une colonne déclenche un coup dans cette colonne.
+	cout<<"Clic sur la case ("<<j<<","<<i<<").\n";
 	*coup=j;
 	maPartie.joueUnCoup(partieEnCours,coup,ligne,ok,c);
 	if(*ok)
 	{
+		// Si le coup a été effectivement joué, on effectue
+		// l'affichage correspondant de la nouvelle case.
 		if (*c=='R')couleurCase[*ligne][*coup]='R';
 		if (*c=='J')couleurCase[*ligne][*coup]='J';
 		glutPostRedisplay();
 	}
-	delete partieEnCours;
+	else
+	{
+		if(*partieEnCours)
+		{
+			cout<<"Coup non possible."<<endl;
+		}
+		else
+		{
+			cout<<"Partie terminee."<<endl;
+			cout<<maPartie.getGagnant()<<" gagnant."<<endl;
+		}
+	}
 	delete ok;
 	delete coup;
 	delete ligne;
@@ -200,6 +216,7 @@ void handleResize(int w, int h)
 
 void handleKey(unsigned char key,int x, int y)
 {
+  // Q pour quitter.
   switch(key)
   {
     case 'q':
@@ -210,6 +227,9 @@ void handleKey(unsigned char key,int x, int y)
 
 void menu(int choix)
 {
+	// Ecoute le menu et positionne valeurMenu
+	// pour exécution de la fonction callback
+	// correspondante via la fonction affiche.
 	valeurMenu = choix;
 	glutPostRedisplay() ;
 }
@@ -217,6 +237,7 @@ void menu(int choix)
 
 void annuleCoup(void)
 {
+	// Tente d'annuler le dernier coup joué.
 	bool* isCoupAnnule= new bool;
 	int* i=new int;
 	int* j=new int;
@@ -224,8 +245,10 @@ void annuleCoup(void)
 	if(*isCoupAnnule)
 	{
 		couleurCase[*i][*j]='N';
+		*partieEnCours=true;
 		glutPostRedisplay() ;
 	}
+	else cout<<"Aucun coup a annuler."<<endl;
 	delete isCoupAnnule;
 	delete i;
 	delete j;

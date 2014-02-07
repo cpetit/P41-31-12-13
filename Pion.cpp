@@ -1,4 +1,4 @@
-// Version du 29/01/14
+// Version du 07/02/14
 
 #include "Pion.h"
 #include <iostream>
@@ -12,7 +12,7 @@ int Pion::nbPionRouge=0;
 // Constructeurs
 Pion::Pion()
 {
-	//cout<<"Constructeur defaut.\n";
+
 }
 
 // Le seul constructeur dont nous aurons besoin affectera obligatoirement une
@@ -29,9 +29,7 @@ Pion::Pion(string cetteCouleur)
 // Destructeur
 Pion::~Pion(void)
 {
-	if (this->couleur!="vide") this->compteur--; 
-	if (this->couleur=="rouge") this->nbPionRouge--;
-	if (this->couleur=="jaune") this->nbPionJaune--;
+
 }
 
 // Getter et setter
