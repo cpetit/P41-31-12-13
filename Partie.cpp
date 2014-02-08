@@ -13,7 +13,6 @@ Partie::Partie(void)
 	this->trait=joueur1.getNom();
 }
 
-
 Partie::~Partie(void)
 {
 	// Nettoyage
@@ -28,6 +27,21 @@ Joueur Partie::getJoueur(string couleur)
 {
 	if (couleur=="rouge") return this->joueur1;
 	else return this->joueur2;
+}
+
+vector<int> Partie::getHistorique(void)
+{
+	return (this->historique);
+}
+
+ string Partie::getTrait(void)
+{
+	return (this->trait);
+}
+
+int Partie::getNbCoup(void)
+{
+	return(this->nbCoup);
 }
 
 void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
@@ -108,11 +122,6 @@ void Partie::annuleCoup(bool*effectue,int* i,int*j)
 		}
 	}
 	else *effectue=false;
-}
-
-int Partie::getNbCoup(void)
-{
-	return this->nbCoup;
 }
 
 void Partie::info(void)

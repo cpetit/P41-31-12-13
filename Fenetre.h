@@ -12,6 +12,7 @@ static int Height;
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include "Partie.h"
 #include "Pion.h"
 #include "Case.h"

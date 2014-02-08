@@ -34,6 +34,8 @@ class Partie
 	~Partie(void);
 	string getGagnant(void);
 	int getNbCoup(void);
+	string getTrait(void);
+	vector<int> getHistorique(void);
 	Joueur getJoueur(string);
 	void joueUnCoup(bool*,int*,int*,bool*,string*);
 	void annuleCoup(bool*,int*,int*);

@@ -109,6 +109,8 @@ void affiche()
 	int i;
 	void annuleCoup(void);		// prototype d'annuleCoup
 	void nouvellePartie(void);	// self explanatory
+	void sauvegarde(void);		// idem
+	void chargerPartie(void);			// idem
   
 	glClearColor(0, 0, 1, 0);		// Couleur de fond
 	glClear(GL_COLOR_BUFFER_BIT);	// Nettoyage de la fenêtre 
@@ -117,8 +119,8 @@ void affiche()
 	// correspondante à chaque choix (via le callback !).
 	switch(valeurMenu)
 	{
-		case 1: cout<<"Charger."<<endl;break;
-		case 2: cout<<"Sauver."<<endl;break;
+		case 1: chargerPartie();break;
+		case 2: sauvegarde();break;
 		case 3: annuleCoup();break;
 		case 4: nouvellePartie();break;
 	}
@@ -280,4 +282,94 @@ void nouvellePartie(void)
 	{
 		annuleCoup();
 	}
+}
+
+void sauvegarde(void)
+{
+	// Fonction qui sauvegarde la partie en cours.
+	string nomFichier;								// Fichier dans lequel on sauvegarde.
+	vector<int> vecteur=maPartie.getHistorique();	// Historique des coups.
+	string premier=maPartie.getTrait();				// Joueur qui a débuté la partie.
+	int nbCoup=maPartie.getNbCoup();				// Nombre de coups joués.
+
+	if(nbCoup%2==1)
+	{
+		if(premier=="rouge")premier="jaune";
+		else premier="rouge";
+	}
+	cout<<"Nom de la partie a sauvegarder : ";
+	cin>>nomFichier;
+	ofstream fichier(nomFichier+".txt");
+    if (!fichier)
+    {
+        cerr <<"Erreur\n";
+        return;
+    }
+	else
+	{
+		fichier<<nbCoup<<"\n";
+		fichier<<premier<<"\n";
+		for(int i=0;i<nbCoup;i++)fichier<<vecteur[i]<<"\n";
+		fichier.close();
+    }
+}
+
+void chargerPartie(void)
+{
+	// Fonction qui charge une partie depuis un fichier
+	// texte dans le répertoire local.
+	string nomFichier;		// Fichier dans lequel on sauvegarde.
+	vector<int> vecteur;	// Historique des coups.
+	string premier;			// Joueur qui a débuté la partie.
+	int nbCoup;				// Nombre de coups joués.
+	int pos;				// Position à mettre dans l'historique.
+	bool* ok= new bool;		// vrai si coup possible
+	//int* coup=new int;		// colonne où le coup est joué
+	int* ligne=new int;		// ligne (hauteur) du coup
+	string* c=new string;	// couleur du pion joué
+	*ok=true;
+
+	// On recupère dans le fichier le nombre de coups joués,
+	// la couleur du joueur qui a débuté la partie et
+	// l'historique des coups.
+	cout<<"Nom de la partie a charger : ";
+	cin>>nomFichier;
+	ifstream fichier(nomFichier+".txt",ios::in);
+    if(fichier)
+    {
+		fichier>>nbCoup;
+		cout<<nbCoup<<endl;
+		fichier>>premier;
+		cout<<premier<<endl;
+		for(int i=0;i<nbCoup;i++)
+		{
+			fichier>>pos;
+			vecteur.push_back(pos);
+			cout<<vecteur[i]<<endl;
+		}
+		fichier.close();
+    }
+    else cerr<<"Erreur"<<endl;
+
+	// On rejoue la partie jusqu'au dernier coup !
+	nouvellePartie();
+	for(int i=0;i<nbCoup;i++)
+	{
+		// il faut trouver le numero de colonne
+		// correspondant à chaque case
+		pos=(int)(vecteur[i]-vecteur[i]%LARGEUR)/LARGEUR;
+		maPartie.joueUnCoup(partieEnCours,&pos,ligne,ok,c);
+		if(*ok)
+		{
+			if (*c=="rouge")couleurCase[*ligne][pos]='R';
+			if (*c=="jaune")couleurCase[*ligne][pos]='J';
+		}
+	}
+	// On réaffiche tout à la fin.
+	glutPostRedisplay();	
+	// Nettoyage
+	delete ok;
+	//delete coup;
+	delete ligne;
+	delete c;
 }
