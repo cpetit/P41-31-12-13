@@ -11,6 +11,8 @@ static int Height;
 #include <GL/glut.h>
 #include <string>
 #include <vector>
+#include <iostream>
+#include "Partie.h"
 #include "Pion.h"
 #include "Case.h"
 #include "Colonne.h"
@@ -19,13 +21,9 @@ using namespace std;
 
 class Fenetre
 {
-	// Attributs
-	private:
-
 	// Méthodes
 	public:
 	Fenetre(void);
 	~Fenetre(void);
 	void ouvrir(int argc, char** argv);
 };
-

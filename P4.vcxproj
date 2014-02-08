@@ -66,6 +66,9 @@
     <ClCompile Include="Colonne.cpp" />
     <ClCompile Include="EtatCourant.cpp" />
     <ClCompile Include="Fenetre.cpp" />
+    <ClCompile Include="Humain.cpp" />
+    <ClCompile Include="IA.cpp" />
+    <ClCompile Include="Joueur.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Partie.cpp" />
     <ClCompile Include="Pion.cpp" />
@@ -75,8 +78,14 @@
     <ClInclude Include="Colonne.h" />
     <ClInclude Include="EtatCourant.h" />
     <ClInclude Include="Fenetre.h" />
+    <ClInclude Include="Humain.h" />
+    <ClInclude Include="IA.h" />
+    <ClInclude Include="Joueur.h" />
     <ClInclude Include="Partie.h" />
     <ClInclude Include="Pion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

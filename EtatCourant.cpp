@@ -1,4 +1,4 @@
-// Version du 07/02/14
+// Version du 08/02/14
 
 #include "EtatCourant.h"
 #include <iostream>
@@ -40,19 +40,19 @@ Colonne EtatCourant::getCol(int l)
 	return this->listeCol[l];
 }
 
-uint64_t EtatCourant::getEtat(int i)
+uint64_t EtatCourant::getEtat(string couleur)
 {
-	if(i==1) return this->etat1;
+	if(couleur=="rouge") return this->etat1;
 	else return this->etat2;
 }
 
 // Teste si la partie est gagnée par le joueur numJoueur.
-bool EtatCourant::isGagne(int numJoueur)
+bool EtatCourant::isGagne(string couleur)
 {
 	bool res=false;
 	uint64_t etat;
-	if (numJoueur==1) etat=this->etat1;
-	if (numJoueur==2) etat=this->etat2;
+	if (couleur=="rouge") etat=this->etat1;
+	if (couleur=="jaune") etat=this->etat2;
 	for(int indice=0;(indice<NBPOSG)&&(!res);indice++)
 	{
 		// Chaque grille est représentée par un entier dont la décomposition
@@ -66,7 +66,7 @@ bool EtatCourant::isGagne(int numJoueur)
 		if((this->posG[indice]&etat)==this->posG[indice])
 		{
 			res=true;  
-			cout<<"Joueur "<<numJoueur<<" a gagne !!\n";
+			cout<<"Joueur "<<couleur<<" a gagne !!\n";
 		}
 	}
 	return res;
@@ -74,7 +74,7 @@ bool EtatCourant::isGagne(int numJoueur)
 
 // Joue un pion à la colonne l.
 // Si la colonne est pleine, rien ne se passe.
-bool EtatCourant::jouer(Pion pi,int l,int numJoueur)
+bool EtatCourant::jouer(Pion pi,int l,string couleur)
 {
 	int h,numCase;
 	bool ok=false;
@@ -85,17 +85,17 @@ bool EtatCourant::jouer(Pion pi,int l,int numJoueur)
 		// Met à jour l'état.
 		h=this->listeCol[l].getNbPion()-1;
 		numCase=h+LARGEUR*l;
-		if (numJoueur==1)this->etat1+=(uint64_t)1<<numCase;
-		if (numJoueur==2)this->etat2+=(uint64_t)1<<numCase;
-		cout<<"Etat1: "<<this->etat1<<endl;
-		cout<<"Etat2: "<<this->etat2<<endl;
+		if (couleur=="rouge")this->etat1+=(uint64_t)1<<numCase;
+		if (couleur=="jaune")this->etat2+=(uint64_t)1<<numCase;
+		//cout<<"Etat1: "<<this->etat1<<endl;
+		//cout<<"Etat2: "<<this->etat2<<endl;
 		cout<<"Pion "<<this->listeCol[l].getContenuH(h).getNum()<<" en case "<<numCase<<" ("<<l<<","<<h<<")."<<endl;
 		ok=true;
 	}
 	return ok;
 }
 
-bool EtatCourant::enlever(int l,int numJoueur)
+bool EtatCourant::enlever(int l,string couleur)
 {
 	int h,numCase;
 	bool ok=false;
@@ -108,8 +108,8 @@ bool EtatCourant::enlever(int l,int numJoueur)
 		// Mise à jour this->etat :
 		// Il faut remettre un zéro dans la case correspondante,
 		// c.-à-d. soustraire 2 ^ numéro de case.
-		if (numJoueur==1)this->etat1-=(uint64_t)1<<numCase;
-		if (numJoueur==2)this->etat2-=(uint64_t)1<<numCase;
+		if (couleur=="rouge")this->etat1-=(uint64_t)1<<numCase;
+		if (couleur=="jaune")this->etat2-=(uint64_t)1<<numCase;
 		ok=true;
 	}
 	else cout<<"Colonne vide."<<endl;

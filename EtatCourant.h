@@ -1,4 +1,4 @@
-// Version du 06/02/14
+// Version du 08/02/14
 
 #define NBPOSG 69
 // Nombre de positions gagnantes (si H=6 et L=7)
@@ -31,10 +31,10 @@ class EtatCourant
 	~EtatCourant(void);
 	// Getters et setters.
 	Colonne getCol(int);
-	uint64_t getEtat(int);
+	uint64_t getEtat(string);
 	// Auutres méthodes.
-	bool jouer(Pion,int,int);		// Tente de jouer un pion dans une colonne, pour un des joueurs.
-	bool enlever(int,int);			// Enlève un pion pour annuler un coup.
-	bool isGagne(int);				// Teste si le joueur qui vient de jouer a gagné la partie.
+	bool jouer(Pion,int,string);		// Tente de jouer un pion dans une colonne, pour un des joueurs.
+	bool enlever(int,string);			// Enlève un pion pour annuler un coup.
+	bool isGagne(string);				// Teste si le joueur qui vient de jouer a gagné la partie.
 };
 

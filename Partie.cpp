@@ -1,22 +1,16 @@
-// Version du 07/02/2014
+// Version du 08/02/2014
 
 #include <iostream>
 #include "Partie.h"
 
 Partie::Partie(void)
 {
-	joueur1="moa";
-	joueur2="ordi";
-	gagnant="";
-	gagne=false;
-	int nbCoup=0;
-	trait=joueur1;
-	// Création du stock initial de pions.
-	for(int i=0;i<(LARGEUR*HAUTEUR)/2;i++)
-	{
-		listePionRouge.push_back(Pion("rouge"));
-		listePionJaune.push_back(Pion("jaune"));
-	}
+	this->joueur1.setJoueur("moa","rouge");
+	this->joueur2.setJoueur("pc","jaune");
+	this->gagnant="";
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=joueur1.getNom();
 }
 
 
@@ -30,7 +24,13 @@ string Partie::getGagnant(void)
 	return this->gagnant;
 }
 
-void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,char*c)
+Joueur Partie::getJoueur(string couleur)
+{
+	if (couleur=="rouge") return this->joueur1;
+	else return this->joueur2;
+}
+
+void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
 {	
 	// *encore reste vrai tant que la partie n'est pas finie
 	// (c.-à-d. pas de gagnant et encore des pions à jouer)
@@ -41,25 +41,17 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,char*c)
 	// *c donne la couleur du pion qui est posé (si coup ok)
 
 	int numCase;
+	Joueur joueur;
 	if ((*encore)&&(!situation.getCol(*coup).isPleine())&&(!this->gagne))
 	{
-		if(this->trait==this->joueur1)
-		{
-			*ok=situation.jouer(this->listePionRouge.back(),*coup,1);
-			this->listePionRouge.pop_back();
-			*c='R';
-		}
-		if(this->trait==this->joueur2)
-		{
-			*ok=situation.jouer(this->listePionJaune.back(),*coup,2);
-			this->listePionJaune.pop_back();
-			*c='J';
-		}
+		if(this->trait==this->joueur1.getNom()) joueur=this->joueur1;
+		else joueur=this->joueur2;
+		*ok=situation.jouer(joueur.getListePion().back(),*coup,joueur.getCouleur());
+		*c=joueur.getCouleur();
 		nbCoup++;
 		cout<<"Nombre de coups : "<<nbCoup<<"\n";
 		// Teste si le coup rend gagnant le joueur qui a le trait.
-		if (this->trait==this->joueur1)this->gagne=situation.isGagne(1);
-		if (this->trait==this->joueur2)this->gagne=situation.isGagne(2);
+		gagne=situation.isGagne(*c);
 		if (this->gagne) this->gagnant=this->trait;
 		// Si un gagnant existe, la partie va s'arrêter.
 		*encore=!this->gagne;
@@ -71,8 +63,8 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,char*c)
 		numCase=*ligne+7*(*coup);
 		historique.push_back(numCase);
 		// On permute le trait.
-		if(this->trait==this->joueur1) this->trait=this->joueur2;
-		else this->trait=this->joueur1;
+		if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
+		else this->trait=joueur1.getNom();
 	}
 	else
 	{
@@ -88,28 +80,28 @@ void Partie::annuleCoup(bool*effectue,int* i,int*j)
 	// *j colonne où annuler.
 	// *i ligne où annuler.
 
-	int derniereCase,ligne,colonne,numJoueur;
+	int derniereCase,ligne,colonne;
+	Joueur joueur;
 	if(this->nbCoup>0)
 	{
 		// On regarde qui jouait au coup précédent
-		if(this->trait==this->joueur1)  numJoueur=2;
-		if(this->trait==this->joueur2)  numJoueur=1;
+		if(this->trait==joueur1.getNom())  joueur=this->joueur2;
+		if(this->trait==joueur2.getNom())  joueur=this->joueur1;
 		// On supprime le coup annulé de l'historique des coups.
 		derniereCase=this->historique.back();
 		this->historique.pop_back();
 		// On rajoute le pion correspondant au stock du joueur.
 		ligne=derniereCase%7;
 		colonne=(int)(derniereCase-ligne)/7;
-		if (nbCoup%2==0) listePionRouge.push_back(this->situation.getCol(colonne).getContenuH(ligne));
-		else listePionJaune.push_back(this->situation.getCol(colonne).getContenuH(ligne));
+		joueur.pushPion(this->situation.getCol(colonne).getContenuH(ligne));
 		// On enlève le pion de la colonne et on met à jour
 		// le nombre de coups et le trait.
-		*effectue=this->situation.enlever(colonne,numJoueur);
+		*effectue=this->situation.enlever(colonne,joueur.getCouleur());
 		if(*effectue)
 		{
 			nbCoup--;
-			if(this->trait==this->joueur1) this->trait=this->joueur2;
-			else this->trait=this->joueur1;
+			if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
+			else this->trait=joueur1.getNom();
 			*i=ligne;
 			*j=colonne;
 			this->gagne=false;

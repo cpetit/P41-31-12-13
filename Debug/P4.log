@@ -1,14 +1,17 @@
-﻿Build started 2/7/2014 8:28:12 PM.
+﻿Build started 2/8/2014 3:23:29 PM.
      1>Project "C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\P4\P4.vcxproj" on node 2 (rebuild target(s)).
      1>_PrepareForClean:
          Deleting file "Debug\P4.lastbuildstate".
        InitializeBuildStatus:
          Creating "Debug\P4.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Case.cpp Colonne.cpp EtatCourant.cpp Fenetre.cpp main.cpp Partie.cpp Pion.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Case.cpp Colonne.cpp EtatCourant.cpp Fenetre.cpp Humain.cpp IA.cpp Joueur.cpp main.cpp Partie.cpp Pion.cpp
          Pion.cpp
          Partie.cpp
          main.cpp
+         Joueur.cpp
+         IA.cpp
+         Humain.cpp
          Fenetre.cpp
          EtatCourant.cpp
          Colonne.cpp
@@ -19,6 +22,9 @@
          Debug\Colonne.obj
          Debug\EtatCourant.obj
          Debug\Fenetre.obj
+         Debug\Humain.obj
+         Debug\IA.obj
+         Debug\Joueur.obj
          Debug\main.obj
          Debug\Partie.obj
          Debug\Pion.obj
@@ -32,4 +38,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.89
+Time Elapsed 00:00:07.11

@@ -36,6 +36,15 @@
     <ClCompile Include="Fenetre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Joueur.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Humain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IA.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pion.h">
@@ -56,5 +65,17 @@
     <ClInclude Include="Fenetre.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Joueur.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Humain.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IA.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
 </Project>
