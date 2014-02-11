@@ -1,4 +1,4 @@
-﻿Build started 2/8/2014 6:10:31 PM.
+﻿Build started 2/11/2014 7:18:40 AM.
      1>Project "C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\P4\P4.vcxproj" on node 2 (rebuild target(s)).
      1>_PrepareForClean:
          Deleting file "Debug\P4.lastbuildstate".
@@ -38,4 +38,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.96
+Time Elapsed 00:00:07.81

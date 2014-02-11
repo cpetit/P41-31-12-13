@@ -1,4 +1,4 @@
-// Version du 08/02/14
+// Version du 11/02/14
 
 #include "EtatCourant.h"
 #include <iostream>
@@ -24,8 +24,8 @@ EtatCourant::EtatCourant(void)
     else cerr << "Erreur" << endl;
 
 	// Initialise l'état de la partie à 0, pour chaque joueur.
-	this->etat1=(uint64_t)0;
-	this->etat2=(uint64_t)0;
+	this->etat[0]=(uint64_t)0;
+	this->etat[1]=(uint64_t)0;
 }
 
 // Destructeur.
@@ -40,19 +40,15 @@ Colonne EtatCourant::getCol(int l)
 	return this->listeCol[l];
 }
 
-uint64_t EtatCourant::getEtat(string couleur)
+uint64_t EtatCourant::getEtat(int j)
 {
-	if(couleur=="rouge") return this->etat1;
-	else return this->etat2;
+	return this->etat[j];
 }
 
-// Teste si la partie est gagnée par le joueur numJoueur.
-bool EtatCourant::isGagne(string couleur)
+// Teste si la partie est gagnée par le joueur numéro j.
+bool EtatCourant::isGagne(int j)
 {
 	bool res=false;
-	uint64_t etat;
-	if (couleur=="rouge") etat=this->etat1;
-	if (couleur=="jaune") etat=this->etat2;
 	for(int indice=0;(indice<NBPOSG)&&(!res);indice++)
 	{
 		// Chaque grille est représentée par un entier dont la décomposition
@@ -62,11 +58,11 @@ bool EtatCourant::isGagne(string couleur)
 		// qui composent la position gagnante (4 cases à tester).
 		// Si ce "et" coincide avec la position gagnante, le jeu est terminé.
 		// Au final on parcourt uniquement le tableau de positions gagnantes:
-		// au + 69 opérations.
-		if((this->posG[indice]&etat)==this->posG[indice])
+		// au + 69 opérations pour la taille de jeu standard.
+		if((this->posG[indice]&this->etat[j])==this->posG[indice])
 		{
 			res=true;  
-			cout<<"Joueur "<<couleur<<" a gagne !!\n";
+			cout<<"Joueur "<<j<<" a gagne !!\n";
 		}
 	}
 	return res;
@@ -74,7 +70,7 @@ bool EtatCourant::isGagne(string couleur)
 
 // Joue un pion à la colonne l.
 // Si la colonne est pleine, rien ne se passe.
-bool EtatCourant::jouer(Pion pi,int l,string couleur)
+bool EtatCourant::jouer(Pion pi,int l,int j)
 {
 	int h,numCase;
 	bool ok=false;
@@ -85,17 +81,14 @@ bool EtatCourant::jouer(Pion pi,int l,string couleur)
 		// Met à jour l'état.
 		h=this->listeCol[l].getNbPion()-1;
 		numCase=h+LARGEUR*l;
-		if (couleur=="rouge")this->etat1+=(uint64_t)1<<numCase;
-		if (couleur=="jaune")this->etat2+=(uint64_t)1<<numCase;
-		//cout<<"Etat1: "<<this->etat1<<endl;
-		//cout<<"Etat2: "<<this->etat2<<endl;
+		this->etat[j]+=(uint64_t)1<<numCase;
 		cout<<"Pion "<<this->listeCol[l].getContenuH(h).getNum()<<" en case "<<numCase<<" ("<<l<<","<<h<<")."<<endl;
 		ok=true;
 	}
 	return ok;
 }
 
-bool EtatCourant::enlever(int l,string couleur)
+bool EtatCourant::enlever(int l,int j)
 {
 	int h,numCase;
 	bool ok=false;
@@ -108,8 +101,7 @@ bool EtatCourant::enlever(int l,string couleur)
 		// Mise à jour this->etat :
 		// Il faut remettre un zéro dans la case correspondante,
 		// c.-à-d. soustraire 2 ^ numéro de case.
-		if (couleur=="rouge")this->etat1-=(uint64_t)1<<numCase;
-		if (couleur=="jaune")this->etat2-=(uint64_t)1<<numCase;
+		this->etat[j]-=(uint64_t)1<<numCase;
 		ok=true;
 	}
 	else cout<<"Colonne vide."<<endl;

@@ -1,4 +1,4 @@
-// Version du 08/02/2014
+// Version du 11/02/2014
 
 #include "Joueur.h"
 
@@ -47,10 +47,9 @@ void Joueur::pushPion(Pion pi)
 	this->listePion.push_back(pi);
 }
 
-int Joueur::choixCoup(void)
+int Joueur::jouer(void)
 {
-	// Le moteur d'IA choisit le coup en fonction de l'état
-	return 1;
+	return -1;
 }
 
 void Joueur::info(void)

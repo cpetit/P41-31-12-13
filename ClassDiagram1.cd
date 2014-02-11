@@ -22,7 +22,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Fenetre">
-    <Position X="0.5" Y="4.75" Width="1.75" />
+    <Position X="0.5" Y="5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAgAgAAAAAAAAAAAAQAAAAAAAA=</HashCode>
       <FileName>Fenetre.h</FileName>
@@ -31,7 +31,7 @@
   <Class Name="Partie">
     <Position X="2.75" Y="3.25" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAQQACAQgAAAMhAAAAAAICEAAAAgACAQIAAAAAAAAA=</HashCode>
+      <HashCode>AAAQSACAQgAAAIBAAAAAAICEAAAIgACAQIAAACAAAAA=</HashCode>
       <FileName>Partie.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -45,7 +45,7 @@
   <Class Name="Joueur">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAgAAABAAQAAAAAAIABAAAABQwBAYIAACAAAAAA=</HashCode>
+      <HashCode>AAAAEAgAAABAAQAAAAAAIABAAAABQwBAYIAASAAAAAA=</HashCode>
       <FileName>Joueur.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -59,7 +59,7 @@
   <Class Name="IA">
     <Position X="5" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAIAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAIAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
       <FileName>IA.h</FileName>
     </TypeIdentifier>
   </Class>

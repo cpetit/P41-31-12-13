@@ -1,4 +1,4 @@
-// Version du 08/02/2014
+// Version du 11/02/2014
 
 #pragma once
 #include <windows.h>
@@ -19,25 +19,25 @@ class Partie
 {
 	// Attributs
 	private:
-	Joueur joueur1;
-	Joueur joueur2;
-	string gagnant;
+	Joueur joueur[2];
+	int gagnant;
 	vector<int> historique;
 	bool gagne;
 	int nbCoup;
-	string trait;
+	int trait;
 	EtatCourant situation;
 
 	// Méthodes
 	public:
 	Partie(void);
 	~Partie(void);
-	string getGagnant(void);
+	int getGagnant(void);
 	int getNbCoup(void);
-	string getTrait(void);
+	int getTrait(void);
+	EtatCourant getSituation(void);
 	vector<int> getHistorique(void);
-	Joueur getJoueur(string);
-	void joueUnCoup(bool*,int*,int*,bool*,string*);
+	Joueur getJoueur(int);
+	void joueUnCoup(bool*,int*,int*,bool*,int*);
 	void annuleCoup(bool*,int*,int*);
 	void info(void);
 };

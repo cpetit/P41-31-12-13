@@ -1,16 +1,17 @@
-// Version du 08/02/2014
+// Version du 11/02/2014
 
 #include <iostream>
 #include "Partie.h"
 
 Partie::Partie(void)
 {
-	this->joueur1.setJoueur("moa","rouge");
-	this->joueur2.setJoueur("pc","jaune");
-	this->gagnant="";
+	this->joueur[0].setJoueur("moa","rouge");
+	this->joueur[1].setJoueur("pc","jaune");
+	this->gagnant=-1;
 	this->gagne=false;
 	this->nbCoup=0;
-	this->trait=joueur1.getNom();
+	this->trait=0;
+	this->historique.clear();
 }
 
 Partie::~Partie(void)
@@ -18,15 +19,14 @@ Partie::~Partie(void)
 	// Nettoyage
 }
 
-string Partie::getGagnant(void)
+int Partie::getGagnant(void)
 {
 	return this->gagnant;
 }
 
-Joueur Partie::getJoueur(string couleur)
+Joueur Partie::getJoueur(int i)
 {
-	if (couleur=="rouge") return this->joueur1;
-	else return this->joueur2;
+	return this->joueur[i];
 }
 
 vector<int> Partie::getHistorique(void)
@@ -34,7 +34,7 @@ vector<int> Partie::getHistorique(void)
 	return (this->historique);
 }
 
- string Partie::getTrait(void)
+ int Partie::getTrait(void)
 {
 	return (this->trait);
 }
@@ -44,7 +44,12 @@ int Partie::getNbCoup(void)
 	return(this->nbCoup);
 }
 
-void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
+EtatCourant Partie::getSituation(void)
+{
+	return this->situation;
+}
+
+void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,int*j)
 {	
 	// *encore reste vrai tant que la partie n'est pas finie
 	// (c.-à-d. pas de gagnant et encore des pions à jouer)
@@ -52,21 +57,18 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
 	// *coup est la colonne où l'on doit jouer.
 	// *ligne est le numero de ligne où jouer.
 	// *ok indique si le coup est possible ou non
-	// *c donne la couleur du pion qui est posé (si coup ok)
+	// *j donne le numéro du joueur qui a le trait (si coup ok)
 
 	int numCase;
-	Joueur joueur;
 	if ((*encore)&&(!situation.getCol(*coup).isPleine())&&(!this->gagne))
 	{
-		if(this->trait==this->joueur1.getNom()) joueur=this->joueur1;
-		else joueur=this->joueur2;
-		*ok=situation.jouer(joueur.getListePion().back(),*coup,joueur.getCouleur());
-		*c=joueur.getCouleur();
+		*j=this->trait;
+		*ok=situation.jouer(this->joueur[*j].getListePion().back(),*coup,*j);
 		nbCoup++;
 		cout<<"Nombre de coups : "<<nbCoup<<"\n";
 		// Teste si le coup rend gagnant le joueur qui a le trait.
-		gagne=situation.isGagne(*c);
-		if (this->gagne) this->gagnant=this->trait;
+		gagne=situation.isGagne(*j);
+		if (this->gagne) this->gagnant=*j;
 		// Si un gagnant existe, la partie va s'arrêter.
 		*encore=!this->gagne;
 		// Le numéro de ligne où a été ajouté le pion est renvoyé
@@ -77,8 +79,7 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
 		numCase=*ligne+7*(*coup);
 		historique.push_back(numCase);
 		// On permute le trait.
-		if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
-		else this->trait=joueur1.getNom();
+		this->trait=(1+this->trait)%2;
 	}
 	else
 	{
@@ -95,12 +96,10 @@ void Partie::annuleCoup(bool*effectue,int* i,int*j)
 	// *i ligne où annuler.
 
 	int derniereCase,ligne,colonne;
+	int numJoueur=(1+this->trait)%2;	// Celui qui jouait au coup précédent
 	Joueur joueur;
 	if(this->nbCoup>0)
 	{
-		// On regarde qui jouait au coup précédent
-		if(this->trait==joueur1.getNom())  joueur=this->joueur2;
-		if(this->trait==joueur2.getNom())  joueur=this->joueur1;
 		// On supprime le coup annulé de l'historique des coups.
 		derniereCase=this->historique.back();
 		this->historique.pop_back();
@@ -110,12 +109,11 @@ void Partie::annuleCoup(bool*effectue,int* i,int*j)
 		joueur.pushPion(this->situation.getCol(colonne).getContenuH(ligne));
 		// On enlève le pion de la colonne et on met à jour
 		// le nombre de coups et le trait.
-		*effectue=this->situation.enlever(colonne,joueur.getCouleur());
+		*effectue=this->situation.enlever(colonne,numJoueur);
 		if(*effectue)
 		{
 			nbCoup--;
-			if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
-			else this->trait=joueur1.getNom();
+			this->trait=(1+this->trait)%2;
 			*i=ligne;
 			*j=colonne;
 			this->gagne=false;

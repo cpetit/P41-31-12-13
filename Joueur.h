@@ -1,4 +1,4 @@
-// Version du 08/02/2014
+// Version du 11/02/2014
 
 #pragma once
 #define HAUTEUR 6
@@ -33,7 +33,7 @@ class Joueur
 	vector<Pion> getListePion(void);
 	void popPion(void);
 	void pushPion(Pion);
-	int choixCoup(void);
+	int jouer(void);
 	// Autres méthodes.
 	void info(void);
 };

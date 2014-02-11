@@ -1,4 +1,4 @@
-// Version du 06/02/2014
+// Version du 11/02/2014
 
 #define PI 3.1415926535897932384626433832795
 
@@ -10,6 +10,7 @@ static int Height;
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <string>
+#include <stdint.h>
 #include <vector>
 #include <iostream>
 #include <fstream>
@@ -18,6 +19,9 @@ static int Height;
 #include "Case.h"
 #include "Colonne.h"
 #include "EtatCourant.h"
+#include "Joueur.h"
+#include "Humain.h"
+#include "IA.h"
 using namespace std;
 
 class Fenetre
