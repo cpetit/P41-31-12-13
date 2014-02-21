@@ -44,6 +44,9 @@ class Partie
 	EtatCourant getSituation(void);
 	vector<int> getHistorique(void);
 	Joueur* getJoueur(int);
+	void Partie::SetPartie(string,string);
+	void Partie::SetPartie(string,string,ALGO);
+	void Partie::SetPartie(string,ALGO,string,ALGO);
 	void joueUnCoup(bool*,int*,int*,bool*,int*);
 	void annuleCoup(bool*,int*,int*);
 	void info(void);

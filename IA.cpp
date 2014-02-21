@@ -58,7 +58,7 @@ int IA::jouer(EtatCourant* EtC)
 			AlphaBeta iaAB;
 			score=iaAB.parcours(EtC->getEtat(this->numJ),EtC->getEtat((1+this->numJ)%2),EtC->getFirstVide(),1,-10000,10000,this->numJ);
 			choixCoup=iaAB.getCoup();
-			cout<<"Racine: "<<choixCoup<<"("<<score<<")"<<endl;
+			//cout<<"Racine: "<<choixCoup<<"("<<score<<")"<<endl;
 			break;
 		}
 		default: break;

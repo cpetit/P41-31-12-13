@@ -6,7 +6,8 @@
 // Constructeur par défaut
 Partie::Partie()
 {
-
+	this->joueur[0]=new Humain(0);
+	this->joueur[1]=new Humain(1);
 }
 
 // Constructeurs qui permettent en début de partie de décider si l'on
@@ -79,6 +80,8 @@ Partie::Partie(char typeJ0,string nomJ0,char typeJ1,string nomJ1,ALGO algo1)
 
 Partie::~Partie(void)
 {
+	delete(this->joueur[0]);
+	delete(this->joueur[1]);
 }
 
 int Partie::getGagnant(void)
@@ -109,6 +112,51 @@ int Partie::getNbCoup(void)
 EtatCourant Partie::getSituation(void)
 {
 	return this->situation;
+}
+
+void Partie::SetPartie(string nomJ0,string nomJ1)
+{
+	delete(this->joueur[0]);
+	delete(this->joueur[1]);
+	this->joueur[0]=new Humain(0);
+	this->joueur[1]=new Humain(1);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
+
+void Partie::SetPartie(string nomJ0,string nomJ1,ALGO alg)
+{
+	delete(this->joueur[0]);
+	delete(this->joueur[1]);
+	this->joueur[0]=new Humain(0);
+	this->joueur[1]=new IA(1,alg);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
+
+void Partie::SetPartie(string nomJ0,ALGO algo0,string nomJ1,ALGO algo1)
+{
+	delete(this->joueur[0]);
+	delete(this->joueur[1]);
+	this->joueur[0]=new IA(0,algo0);
+	this->joueur[1]=new IA(1,algo1);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
 }
 
 void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,int*j)

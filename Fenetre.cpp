@@ -1,13 +1,15 @@
 // Version du 11/02/14
 
 #include "Fenetre.h"
+#include "conio.h"
 
 // Variables globales devant être appelées dans les différentes
 // fonctions de callback (dont on ne peut pas modifier le prototype).
 
-Partie maPartie('H',"moa",'I',"pc",AB);
+Partie maPartie('H',"moa",'H',"pc");
 int valeurMenu;
 int clic=-1;
+int compt=1;
 char couleurCase[HAUTEUR][LARGEUR];
 bool* partieEnCours= new bool(true);
 int* coup=new int(-1);	// colonne où jouer et/ou marqueur de clic
@@ -127,10 +129,12 @@ void affiche()
 	// fonction callback glutDisplayFunc) dès qu'un affichage
 	// est à effectuer.
 	int i;
-	void annuleCoup(void);		// prototype d'annuleCoup
-	void nouvellePartie(void);	// self explanatory
-	void sauvegarde(void);		// idem
-	void chargerPartie(void);	// idem
+	void annuleCoup(void);			// prototype d'annuleCoup
+	void nouvellePartie(void);		// humain contre humain
+	void nouvellePartieHI(void);	// humain contre IA
+	void nouvellePartieII(void);	// IA contre IA
+	void sauvegarde(void);			// sauvegarde...
+	void chargerPartie(void);		// chargement de partie...
   
 	glClearColor(0, 0, 1, 0);		// Couleur de fond
 	glClear(GL_COLOR_BUFFER_BIT);	// Nettoyage de la fenêtre 
@@ -143,8 +147,8 @@ void affiche()
 		case 2: sauvegarde();break;
 		case 3: annuleCoup();break;
 		case 4: nouvellePartie();break;
-		case 5: nouvellePartie();break;
-		case 6: nouvellePartie();break;
+		case 5: nouvellePartieHI();break;
+		case 6: nouvellePartieII();break;
 	}
 	valeurMenu=0;
  
@@ -208,16 +212,19 @@ void idle(void)
 	// VARIABLES GLOBALES UTILISEES DANS CETTE FONCTION
 	// *j, *ok, *coup, *ligne, *partieEnCours, maPartie
 	
+	// Pas de temporisation de idle car cela ralentit trop
+	// les coups de l'IA.
 	*j=maPartie.getTrait();
 	EtatCourant s=maPartie.getSituation();
 	EtatCourant* adrS=&s;
 	*coup=maPartie.getJoueur(*j)->jouer(adrS);
 	bool type=maPartie.getJoueur(*j)->isHumain();
-	if((!maPartie.getJoueur(*j)->isHumain())||(maPartie.getJoueur(*j)->isHumain()&&clic>=0))
+	if(((compt==1)&&(!maPartie.getJoueur(*j)->isHumain()))||(maPartie.getJoueur(*j)->isHumain()&&clic>=0))
 	{
 		*ok=true;
 		if (*coup<0)*coup=clic;
 		maPartie.joueUnCoup(partieEnCours,coup,ligne,ok,j);
+		compt=1;
 		if(*ok)
 		{
 			// Si le coup a été effectivement joué, on effectue
@@ -234,8 +241,12 @@ void idle(void)
 			}
 			else
 			{
-				cout<<"Partie terminee."<<endl;
-				cout<<maPartie.getGagnant()<<" gagnant."<<endl;
+				if(compt==1)
+				{
+					cout<<"Partie terminee."<<endl;
+					cout<<maPartie.getGagnant()<<" gagnant."<<endl;
+					compt=0;
+				}
 			}
 		}
 		*coup=-1;
@@ -309,11 +320,15 @@ void annuleCoup(void)
 	bool* isCoupAnnule= new bool;
 	int* i=new int;
 	int* k=new int;
+	// Le coup est annulé depuis la classe partie
 	maPartie.annuleCoup(isCoupAnnule,i,k);
+	// L'effet graphique de l'annulation est traité
+	// dans la fenêtre.
 	if(*isCoupAnnule)
 	{
 		couleurCase[*i][*k]='N';
 		*partieEnCours=true;
+		compt=1;
 		glutPostRedisplay() ;
 	}
 	else cout<<"Aucun coup a annuler."<<endl;
@@ -333,7 +348,41 @@ void nouvellePartie(void)
 	{
 		annuleCoup();
 	}
+	maPartie.SetPartie("moa0","moa1");
 }
+
+void nouvellePartieHI(void)
+{
+	// Crée une nouvelle partie Humain contre IA
+	// Ramène une partie au début.
+
+	int n=maPartie.getNbCoup();
+	for(int i=n;i>0;i--)
+	{
+		annuleCoup();
+	}
+	maPartie.SetPartie("moa","ia",AB);
+}
+
+void nouvellePartieII(void)
+{
+	// Crée une nouvelle partie IA contre IA.
+	// Ramène une partie au début.
+
+	int n=maPartie.getNbCoup();
+	for(int i=n;i>0;i--)
+	{
+		annuleCoup();
+	}
+	maPartie.SetPartie("ia1",NAIF,"ia2",AB);
+	compt=1;
+}
+
+// La saisie du nom de partie se fait dans la console.
+// A ma connaissance, GLUT n'est pas capable d'ouvrir un formulaire
+// de saisie de texte au sein d'une fenêtre.
+// La sauvegarde et le chargement se font dans le répertoire local.
+// NE PAS TAPER .TXT APRES LE NOM DE LA PARTIE.
 
 void sauvegarde(void)
 {

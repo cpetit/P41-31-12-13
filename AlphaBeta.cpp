@@ -1,4 +1,3 @@
-// Version du 01/02/2014
 
 #include "AlphaBeta.h"
 
@@ -47,7 +46,7 @@ int AlphaBeta::parcours(uint64_t etat0,uint64_t etat1,int8_t* firstVide,int prof
 				this->coup=coupPossible[i];
 				if(alpha>=beta)break;
 			}
-			cout<<"Prof "<<prof<<" :"<<this->coup<<"("<<score<<")"<<endl;
+			//cout<<"Prof "<<prof<<" :"<<this->coup<<"("<<score<<")"<<endl;
         }
 		return(alpha);
 	}
@@ -106,10 +105,3 @@ uint64_t AlphaBeta::trois(uint64_t etat0,uint64_t etat1)
 	res|=vide&(etat0<<(H1-1)) & (etat0<<(2*(H1-1))) & (etat0<<(3*(H1-1)));
 	return res;
 }
-
-/*
-COL1 (((bitboard)1<<H1)-(bitboard)1)
-ALL1 (((bitboard)1<<SIZE1)-(bitboard)1)
-BOTTOM (ALL1 / COL1) // has bits i*H1 set
-TOP (BOTTOM << HEIGHT)
-*/
