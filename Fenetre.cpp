@@ -5,7 +5,7 @@
 // Variables globales devant être appelées dans les différentes
 // fonctions de callback (dont on ne peut pas modifier le prototype).
 
-Partie maPartie;
+Partie maPartie('H',"moa",'I',"pc",AB);
 int valeurMenu;
 int clic=-1;
 char couleurCase[HAUTEUR][LARGEUR];
@@ -18,6 +18,7 @@ int* j=new int;			// numéro du joueur courant
 // Constructeur et destructeur (par défaut).
 Fenetre::Fenetre(void)
 {
+
 }
 
 Fenetre::~Fenetre(void)
@@ -208,10 +209,11 @@ void idle(void)
 	// *j, *ok, *coup, *ligne, *partieEnCours, maPartie
 	
 	*j=maPartie.getTrait();
-	uint64_t etat0=maPartie.getSituation().getEtat(0);
-	uint64_t etat1=maPartie.getSituation().getEtat(1);
-	*coup=maPartie.getJoueur(0).jouer();
-	if(clic>=0)
+	EtatCourant s=maPartie.getSituation();
+	EtatCourant* adrS=&s;
+	*coup=maPartie.getJoueur(*j)->jouer(adrS);
+	bool type=maPartie.getJoueur(*j)->isHumain();
+	if((!maPartie.getJoueur(*j)->isHumain())||(maPartie.getJoueur(*j)->isHumain()&&clic>=0))
 	{
 		*ok=true;
 		if (*coup<0)*coup=clic;

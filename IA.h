@@ -2,14 +2,24 @@
 
 #pragma once
 #include "joueur.h"
+#include "EtatCourant.h"
+#include "Partie.h"
+#include "Colonne.h"
+#include "AlphaBeta.h"
+using namespace std;
 
 class IA : public Joueur
 {
 	private:
-
+	ALGO algo;
 	public:
 	IA(void);
+	IA(int,ALGO);
 	~IA(void);
-	int jouer(uint64_t,uint64_t);
+	ALGO getAlgo(void);
+	void setAlgo(ALGO);
+	bool isHumain(void);
+	int jouer(EtatCourant*);
+	int auPif(int);
 };
 

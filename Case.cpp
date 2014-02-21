@@ -3,7 +3,6 @@
 #include "Case.h"
 #include <iostream>
 
-
 // Constructeur et destructeur.
 Case::Case(void)
 {
@@ -41,7 +40,7 @@ void Case::setVide(void)
 	// mais cela est sans intérêt et n'est pas cohérent avec la classe pion.
 	// On se contente donc de mettre l'état à vide.
 	// L'ancien pion a été remis dans le stock du joueur correspondant et on ne
-	// doit donc plus accéder à this->cePion.
+	// peut plus accéder à this->cePion.
 	this->etat="vide";
 }
 

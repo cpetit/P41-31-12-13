@@ -1,66 +1,66 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
   <Class Name="Case">
-    <Position X="9.75" Y="3.75" Width="1.75" />
+    <Position X="8.25" Y="3.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AACAAAAAAAAAAIAAAAgAAAAAgAAAQgAAQAKAAAAAAAA=</HashCode>
       <FileName>Case.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Colonne">
-    <Position X="7.5" Y="3.75" Width="2" />
+    <Position X="5.75" Y="3.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AQAAAAAEAMAAAAAAAAQAAAAAIBAQACAEQAEAAAAAAAA=</HashCode>
       <FileName>Colonne.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="EtatCourant">
-    <Position X="5.25" Y="3.75" Width="2" />
+    <Position X="3.25" Y="3.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAQAAAAAAAAAgAAAAAACQAAAAAhAgAiAAQBAIAAA=</HashCode>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAACAAAAAAhAgAiCAQBAIAAA=</HashCode>
       <FileName>EtatCourant.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Fenetre">
-    <Position X="0.5" Y="5" Width="1.75" />
+    <Position X="0.5" Y="5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAgAgAAAAAAAAAAAAQAAAAAAAA=</HashCode>
       <FileName>Fenetre.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Partie">
-    <Position X="2.75" Y="3.25" Width="2.25" />
-    <TypeIdentifier>
-      <HashCode>AAAQSACAQgAAAIBAAAAAAICEAAAIgACAQIAAACAAAAA=</HashCode>
-      <FileName>Partie.h</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="Pion">
-    <Position X="9.75" Y="0.5" Width="2" />
+    <Position X="11" Y="2.75" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAgCgAAAAAAAAIAACAQAAAAAAAACCAQIAAAAAAAAA=</HashCode>
       <FileName>Pion.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Joueur">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAgAAABAAQAAAAAAIABAAAABQwBAYIAASAAAAAA=</HashCode>
+      <HashCode>AAAAEggAAABAAQAAAAAAIABAAAAAQwBAYIAASAAAAAA=</HashCode>
       <FileName>Joueur.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Humain">
-    <Position X="3" Y="0.5" Width="1.5" />
+    <Position X="3.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAACAAA=</HashCode>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAQAACAAA=</HashCode>
       <FileName>Humain.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="IA">
-    <Position X="5" Y="1.5" Width="1.5" />
+    <Position X="5.25" Y="0.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAIAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <HashCode>AAIAAgEACAAAEAABAAAAAAABAAAAAAAAAAAAQAAAAAg=</HashCode>
       <FileName>IA.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AlphaBeta">
+    <Position X="10" Y="0.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAABBIAAQAACAAAAAAQAEAAAAA=</HashCode>
+      <FileName>AlphaBeta.h</FileName>
     </TypeIdentifier>
   </Class>
   <Font Name="Segoe UI" Size="9" />

@@ -1,4 +1,4 @@
-// Version du 11/02/2014
+// Version du 12/02/2014
 
 #include "Joueur.h"
 
@@ -6,8 +6,18 @@ Joueur::Joueur(void)
 {
 }
 
+Joueur::Joueur(int num)
+{
+	this->numJ=num;
+}
+
 Joueur::~Joueur(void)
 {
+}
+
+int Joueur::getNumJ(void)
+{
+	return this->numJ;
 }
 
 string Joueur::getNom(void)
@@ -47,9 +57,18 @@ void Joueur::pushPion(Pion pi)
 	this->listePion.push_back(pi);
 }
 
-int Joueur::jouer(void)
+// Méthode virtuelle qui sera implémentée
+// différemment pour Humain et IA.
+int Joueur::jouer(EtatCourant* EtC)
 {
 	return -1;
+}
+
+// Méthode virtuelle qui sera implémentée
+// différemment pour Humain et IA.
+bool Joueur::isHumain(void)
+{
+	return true;
 }
 
 void Joueur::info(void)

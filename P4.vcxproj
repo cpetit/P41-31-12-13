@@ -41,6 +41,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -62,6 +63,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlphaBeta.cpp" />
     <ClCompile Include="Case.cpp" />
     <ClCompile Include="Colonne.cpp" />
     <ClCompile Include="EtatCourant.cpp" />
@@ -74,6 +76,7 @@
     <ClCompile Include="Pion.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlphaBeta.h" />
     <ClInclude Include="Case.h" />
     <ClInclude Include="Colonne.h" />
     <ClInclude Include="EtatCourant.h" />
@@ -85,7 +88,7 @@
     <ClInclude Include="Pion.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram31.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
