@@ -1,11 +1,11 @@
-﻿Build started 2/8/2014 3:23:29 PM.
+﻿Build started 2/21/2014 6:47:56 PM.
      1>Project "C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\P4\P4.vcxproj" on node 2 (rebuild target(s)).
      1>_PrepareForClean:
          Deleting file "Debug\P4.lastbuildstate".
        InitializeBuildStatus:
          Creating "Debug\P4.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt Case.cpp Colonne.cpp EtatCourant.cpp Fenetre.cpp Humain.cpp IA.cpp Joueur.cpp main.cpp Partie.cpp Pion.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MTd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt AlphaBeta.cpp Case.cpp Colonne.cpp EtatCourant.cpp Fenetre.cpp Humain.cpp IA.cpp Joueur.cpp main.cpp Partie.cpp Pion.cpp
          Pion.cpp
          Partie.cpp
          main.cpp
@@ -16,9 +16,11 @@
          EtatCourant.cpp
          Colonne.cpp
          Case.cpp
+         AlphaBeta.cpp
          Generating Code...
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib opengl32.lib glu32.lib glut32.lib /MANIFEST /ManifestFile:"Debug\P4.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.lib" /MACHINE:X86 Debug\Case.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.exe" /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib opengl32.lib glu32.lib glut32.lib /MANIFEST /ManifestFile:"Debug\P4.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\cpetit\Documents\Visual Studio 2010\Projects\P4\Debug\P4.lib" /MACHINE:X86 Debug\AlphaBeta.obj
+         Debug\Case.obj
          Debug\Colonne.obj
          Debug\EtatCourant.obj
          Debug\Fenetre.obj
@@ -38,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:07.11
+Time Elapsed 00:00:10.17

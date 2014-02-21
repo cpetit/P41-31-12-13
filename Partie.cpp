@@ -1,36 +1,117 @@
-// Version du 08/02/2014
+// Version du 12/02/2014
 
 #include <iostream>
 #include "Partie.h"
 
-Partie::Partie(void)
+// Constructeur par défaut
+Partie::Partie()
 {
-	this->joueur1.setJoueur("moa","rouge");
-	this->joueur2.setJoueur("pc","jaune");
-	this->gagnant="";
-	this->gagne=false;
-	this->nbCoup=0;
-	this->trait=joueur1.getNom();
+
 }
 
+// Constructeurs qui permettent en début de partie de décider si l'on
+// joue entre deux humains, deux IA, ou un humain et une IA.
+// Le tableau "joueur" est un (petit) tableau polymorphe qui va
+// contenir des pointeurs vers des humains ou des IA (classes qui
+// héritent de Joueur).
+
+Partie::Partie(char typeJ0,string nomJ0,char typeJ1,string nomJ1)
+{
+	if (typeJ0=='H') this->joueur[0]=new Humain(0);
+	else this->joueur[0]=new IA(0,AB);
+	if (typeJ1=='H') this->joueur[1]=new Humain(1);
+	else this->joueur[1]=new IA(1,AB);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
+
+// Trois constructeurs avec type d'algorithmes en cas de joueur non-humain
+
+Partie::Partie(char typeJ0,string nomJ0,ALGO algo0,char typeJ1,string nomJ1,ALGO algo1)
+{
+	if (typeJ0=='H') this->joueur[0]=new Humain(0);
+	else this->joueur[0]=new IA(0,algo0);
+	if (typeJ1=='H') this->joueur[1]=new Humain(1);
+	else this->joueur[1]=new IA(1,algo1);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
+
+Partie::Partie(char typeJ0,string nomJ0,ALGO algo0,char typeJ1,string nomJ1)
+{
+	if (typeJ0=='H') this->joueur[0]=new Humain(0);
+	else this->joueur[0]=new IA(0,algo0);
+	if (typeJ1=='H') this->joueur[1]=new Humain(1);
+	else this->joueur[1]=new IA(1,AB);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
+
+Partie::Partie(char typeJ0,string nomJ0,char typeJ1,string nomJ1,ALGO algo1)
+{
+	if (typeJ0=='H') this->joueur[0]=new Humain(0);
+	else this->joueur[0]=new IA(0,AB);
+	if (typeJ1=='H') this->joueur[1]=new Humain(1);
+	else this->joueur[1]=new IA(1,algo1);
+	this->joueur[0]->setJoueur(nomJ0,"rouge");
+	this->joueur[1]->setJoueur(nomJ1,"jaune");
+	this->gagnant=-1;
+	this->gagne=false;
+	this->nbCoup=0;
+	this->trait=0;
+	this->historique.clear();
+}
 
 Partie::~Partie(void)
 {
-	// Nettoyage
 }
 
-string Partie::getGagnant(void)
+int Partie::getGagnant(void)
 {
 	return this->gagnant;
 }
 
-Joueur Partie::getJoueur(string couleur)
+Joueur* Partie::getJoueur(int i)
 {
-	if (couleur=="rouge") return this->joueur1;
-	else return this->joueur2;
+	return joueur[i];
 }
 
-void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
+vector<int> Partie::getHistorique(void)
+{
+	return (this->historique);
+}
+
+ int Partie::getTrait(void)
+{
+	return (this->trait);
+}
+
+int Partie::getNbCoup(void)
+{
+	return(this->nbCoup);
+}
+
+EtatCourant Partie::getSituation(void)
+{
+	return this->situation;
+}
+
+void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,int*j)
 {	
 	// *encore reste vrai tant que la partie n'est pas finie
 	// (c.-à-d. pas de gagnant et encore des pions à jouer)
@@ -38,21 +119,20 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
 	// *coup est la colonne où l'on doit jouer.
 	// *ligne est le numero de ligne où jouer.
 	// *ok indique si le coup est possible ou non
-	// *c donne la couleur du pion qui est posé (si coup ok)
+	// *j donne le numéro du joueur qui a le trait (si coup ok)
+	// Toutes ces valeurs sont remontées à la méthode qui appelle joueUnCoup
+	// via les pointeurs.
 
 	int numCase;
-	Joueur joueur;
 	if ((*encore)&&(!situation.getCol(*coup).isPleine())&&(!this->gagne))
 	{
-		if(this->trait==this->joueur1.getNom()) joueur=this->joueur1;
-		else joueur=this->joueur2;
-		*ok=situation.jouer(joueur.getListePion().back(),*coup,joueur.getCouleur());
-		*c=joueur.getCouleur();
+		*j=this->trait;
+		*ok=situation.jouer(joueur[*j]->getListePion().back(),*coup,*j);
 		nbCoup++;
 		cout<<"Nombre de coups : "<<nbCoup<<"\n";
 		// Teste si le coup rend gagnant le joueur qui a le trait.
-		gagne=situation.isGagne(*c);
-		if (this->gagne) this->gagnant=this->trait;
+		gagne=situation.isGagne(*j);
+		if (this->gagne) this->gagnant=*j;
 		// Si un gagnant existe, la partie va s'arrêter.
 		*encore=!this->gagne;
 		// Le numéro de ligne où a été ajouté le pion est renvoyé
@@ -63,8 +143,7 @@ void Partie::joueUnCoup(bool*encore,int*coup,int*ligne,bool*ok,string*c)
 		numCase=*ligne+7*(*coup);
 		historique.push_back(numCase);
 		// On permute le trait.
-		if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
-		else this->trait=joueur1.getNom();
+		this->trait=(1+this->trait)%2;
 	}
 	else
 	{
@@ -79,40 +158,33 @@ void Partie::annuleCoup(bool*effectue,int* i,int*j)
 	// *effectue devient vrai quand le coup est annulable.
 	// *j colonne où annuler.
 	// *i ligne où annuler.
+	// Toutes ces valeurs sont remontées à la méthode qui appelle joueUnCoup
+	// via les pointeurs.
 
 	int derniereCase,ligne,colonne;
-	Joueur joueur;
+	int numJoueur=(1+this->trait)%2;	// Celui qui jouait au coup précédent
 	if(this->nbCoup>0)
 	{
-		// On regarde qui jouait au coup précédent
-		if(this->trait==joueur1.getNom())  joueur=this->joueur2;
-		if(this->trait==joueur2.getNom())  joueur=this->joueur1;
 		// On supprime le coup annulé de l'historique des coups.
 		derniereCase=this->historique.back();
 		this->historique.pop_back();
 		// On rajoute le pion correspondant au stock du joueur.
 		ligne=derniereCase%7;
 		colonne=(int)(derniereCase-ligne)/7;
-		joueur.pushPion(this->situation.getCol(colonne).getContenuH(ligne));
+		joueur[numJoueur]->pushPion(this->situation.getCol(colonne).getContenuH(ligne));
 		// On enlève le pion de la colonne et on met à jour
 		// le nombre de coups et le trait.
-		*effectue=this->situation.enlever(colonne,joueur.getCouleur());
+		*effectue=this->situation.enlever(colonne,numJoueur);
 		if(*effectue)
 		{
 			nbCoup--;
-			if(this->trait==joueur1.getNom()) this->trait=joueur2.getNom();
-			else this->trait=joueur1.getNom();
+			this->trait=(1+this->trait)%2;
 			*i=ligne;
 			*j=colonne;
 			this->gagne=false;
 		}
 	}
 	else *effectue=false;
-}
-
-int Partie::getNbCoup(void)
-{
-	return this->nbCoup;
 }
 
 void Partie::info(void)

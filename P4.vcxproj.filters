@@ -45,6 +45,9 @@
     <ClCompile Include="IA.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AlphaBeta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Pion.h">
@@ -74,8 +77,11 @@
     <ClInclude Include="IA.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AlphaBeta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
+    <None Include="ClassDiagram31.cd" />
   </ItemGroup>
 </Project>

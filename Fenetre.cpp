@@ -1,23 +1,29 @@
-// Version du 08/02/14
+// Version du 11/02/14
 
 #include "Fenetre.h"
 
 // Variables globales devant être appelées dans les différentes
 // fonctions de callback (dont on ne peut pas modifier le prototype).
 
-Partie maPartie;
+Partie maPartie('H',"moa",'I',"pc",AB);
 int valeurMenu;
+int clic=-1;
 char couleurCase[HAUTEUR][LARGEUR];
 bool* partieEnCours= new bool(true);
+int* coup=new int(-1);	// colonne où jouer et/ou marqueur de clic
+bool* ok= new bool;		// vrai si coup possible
+int* ligne=new int;		// ligne (hauteur) du coup
+int* j=new int;			// numéro du joueur courant
 
 // Constructeur et destructeur (par défaut).
 Fenetre::Fenetre(void)
 {
+
 }
 
 Fenetre::~Fenetre(void)
 {
-	delete(partieEnCours);
+	
 }
 
 // Méthodes
@@ -45,7 +51,9 @@ void Fenetre::ouvrir(int argc, char** argv)
 	void handleResize(int w, int h);
 	void handleKey(unsigned char key, int x, int y);
 	void menu(int);
+	void submenu(int);
 	void initTab(void);
+	void idle(void);
 	//_________________________________________________________________________
 
 	initTab();	// Initialise les couleurs des cases de la grille.
@@ -56,18 +64,23 @@ void Fenetre::ouvrir(int argc, char** argv)
     glutInitWindowSize(800, 800*1080/1920);			// Taille de la fenetre.
     glutInitWindowPosition(50, 50);					// Position de la fenetre.
     glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE);   // Type d'affficahge RGBA. 
-    glutCreateWindow("PUISSANCE 4 - clic droit pour accéder au menu - q pour quitter -"); 
+    glutCreateWindow("PUISSANCE 4 - clic droit pour accéder au menu - a pour annuler coup - q pour quitter -"); 
 	//_________________________________________________________________________
 
 
 	// Création du menu
-	int m = glutCreateMenu(menu) ;
+	int sm = glutCreateMenu(menu);
+    glutAddMenuEntry ("Humain vs humain", 4);
+    glutAddMenuEntry ("Humain vs IA", 5);
+    glutAddMenuEntry ("IA vs IA", 6);
+	int m = glutCreateMenu(menu);
 	glutSetMenu(m) ;
-	glutAddMenuEntry("Charger partie.",1) ;
-	glutAddMenuEntry("Sauvegarder partie.",2) ;
-	glutAddMenuEntry("Annuler coup.",3) ;
-	glutAddMenuEntry("Nouvelle partie.",4) ;
+	glutAddMenuEntry("Charger partie",1) ;
+	glutAddMenuEntry("Sauvegarder partie",2) ;
+	glutAddMenuEntry("Annuler coup",3) ;
+	glutAddSubMenu("Nouvelle partie",sm) ;
 	glutAttachMenu(GLUT_RIGHT_BUTTON) ;
+
 	//_____________________________________________
 
 
@@ -81,8 +94,15 @@ void Fenetre::ouvrir(int argc, char** argv)
 
 	// Lancement de la boucle principale d'affichage et de
 	// la machine à états opengl.
+	glutIdleFunc(idle);
 	glutMainLoop();
+	// Nettoyage
+	delete ok;
+	delete coup;
+	delete ligne;
+	delete j;
 	delete partieEnCours;
+	delete(coup);
 }	// fin de la méthode ouvrir
 
 
@@ -96,7 +116,7 @@ void initTab(void)
 	// début de jeu.
 	for(int i=0;i<HAUTEUR;i++)
 	{
-		for(int j=0;j<LARGEUR;j++) couleurCase[i][j]='N';
+		for(int k=0;k<LARGEUR;k++) couleurCase[i][k]='N';
 	}
 }
 
@@ -109,6 +129,8 @@ void affiche()
 	int i;
 	void annuleCoup(void);		// prototype d'annuleCoup
 	void nouvellePartie(void);	// self explanatory
+	void sauvegarde(void);		// idem
+	void chargerPartie(void);	// idem
   
 	glClearColor(0, 0, 1, 0);		// Couleur de fond
 	glClear(GL_COLOR_BUFFER_BIT);	// Nettoyage de la fenêtre 
@@ -117,10 +139,12 @@ void affiche()
 	// correspondante à chaque choix (via le callback !).
 	switch(valeurMenu)
 	{
-		case 1: cout<<"Charger."<<endl;break;
-		case 2: cout<<"Sauver."<<endl;break;
+		case 1: chargerPartie();break;
+		case 2: sauvegarde();break;
 		case 3: annuleCoup();break;
 		case 4: nouvellePartie();break;
+		case 5: nouvellePartie();break;
+		case 6: nouvellePartie();break;
 	}
 	valeurMenu=0;
  
@@ -156,12 +180,66 @@ void affiche()
 			glFlush();
 		}
 
-		//Tests pour utiliser des quadriques à la place des polygones.
-		//pour une version ultérieure du programme...
-		//GLUquadricObj *circle = gluNewQuadric ();
-		//if (circle != 0) gluQuadricDrawStyle(circle, GLU_FILL); 
-		//gluDisk (nomDuDisque,centre,rayon,rayonTrouCentral,1);
-		//gluDisk (circle,0,2,60,4); 
+		// Tests pour utiliser des quadriques à la place des polygones.
+		// pour une version ultérieure du programme...
+		// pour la spécularité, le brouillard, etc. on verra aussi après.
+		// GLUquadricObj *circle = gluNewQuadric ();
+		// if (circle != 0) gluQuadricDrawStyle(circle, GLU_FILL); 
+		// gluDisk (nomDuDisque,centre,rayon,rayonTrouCentral,1);
+		// gluDisk (circle,0,2,60,4); 
+	}
+}
+
+void idle(void)
+{
+	// Fonction qui est exécutée en tâche de fond,
+	// tant qu'aucun autre évènement ne se déclenche.
+	// Elle permet de gérer le clic ou l'absence de clic
+	// entre joueur humain et IA et permet la temporisation
+	// lors de l'annulation d'un coup.
+	// *coup est la valeur du coup à jouer pour un joueur humain.
+	// la fonction jouer d'un humain renvoie -1 et tant que le clavier
+	// n'a pas été sollicité, *coup reste à -1: il ne se passe rien.
+	// Lorsque la fonction de callback du clavier est appelé, *coup
+	// prend la valeur de la colonne à jouer.
+	// La fonction jouer de l'IA renvoie directement la valeur du coup
+	// en ce cas, le coup est joué directement sans avoir à cliquer.
+
+	// VARIABLES GLOBALES UTILISEES DANS CETTE FONCTION
+	// *j, *ok, *coup, *ligne, *partieEnCours, maPartie
+	
+	*j=maPartie.getTrait();
+	EtatCourant s=maPartie.getSituation();
+	EtatCourant* adrS=&s;
+	*coup=maPartie.getJoueur(*j)->jouer(adrS);
+	bool type=maPartie.getJoueur(*j)->isHumain();
+	if((!maPartie.getJoueur(*j)->isHumain())||(maPartie.getJoueur(*j)->isHumain()&&clic>=0))
+	{
+		*ok=true;
+		if (*coup<0)*coup=clic;
+		maPartie.joueUnCoup(partieEnCours,coup,ligne,ok,j);
+		if(*ok)
+		{
+			// Si le coup a été effectivement joué, on effectue
+			// l'affichage correspondant de la nouvelle case.
+			if (*j==0)couleurCase[*ligne][*coup]='R';
+			if (*j==1)couleurCase[*ligne][*coup]='J';
+			glutPostRedisplay();
+		}
+		else
+		{
+			if(*partieEnCours)
+			{
+				cout<<"Coup non possible."<<endl;
+			}
+			else
+			{
+				cout<<"Partie terminee."<<endl;
+				cout<<maPartie.getGagnant()<<" gagnant."<<endl;
+			}
+		}
+		*coup=-1;
+		clic=-1;
 	}
 }
 
@@ -170,13 +248,8 @@ void handleButtons(int button, int state, int x, int y)
 	// Fonction de gestion de la souris dans la fenêtre.
 	// Gestion des clics dans la grille.
 
-	int i, j;				// ligne et colonne
+	int i, k;				// ligne et colonne
 	float dx, dy;			// déplacements en x et y
-	bool* ok= new bool;		// vrai si coup possible
-	int* coup=new int;		// colonne où le coup est joué
-	int* ligne=new int;		// ligne (hauteur) du coup
-	string* c=new string;	// couleur du pion joué
-	*ok=true;
 
 	// Où se trouve la souris sur la grille ?
 	if(button != GLUT_LEFT_BUTTON || state != GLUT_UP) return;  
@@ -184,37 +257,11 @@ void handleButtons(int button, int state, int x, int y)
 	dy = Height/(float)HAUTEUR;
 	dx = Width/(float)LARGEUR;
 	i = (int)(y/dy);
-	j = (int)(x/dx); 
-
-	// Un clic sur une colonne déclenche un coup dans cette colonne.
-	cout<<"Clic sur la case ("<<j<<","<<i<<").\n";
-	*coup=j;
-	maPartie.joueUnCoup(partieEnCours,coup,ligne,ok,c);
-	if(*ok)
-	{
-		// Si le coup a été effectivement joué, on effectue
-		// l'affichage correspondant de la nouvelle case.
-		if (*c=="rouge")couleurCase[*ligne][*coup]='R';
-		if (*c=="jaune")couleurCase[*ligne][*coup]='J';
-		glutPostRedisplay();
-	}
-	else
-	{
-		if(*partieEnCours)
-		{
-			cout<<"Coup non possible."<<endl;
-		}
-		else
-		{
-			cout<<"Partie terminee."<<endl;
-			cout<<maPartie.getGagnant()<<" gagnant."<<endl;
-		}
-	}
-	// Nettoyage
-	delete ok;
-	delete coup;
-	delete ligne;
-	delete c;
+	k = (int)(x/dx); 
+	// Capture le numéro de colonne où a eu lieu le clic
+	// et le met dans *coup pour que le coup puisse être
+	// effectif dans idle.
+	if(*coup<0) clic=k;
 }
 
 void handleResize(int w, int h)
@@ -235,8 +282,11 @@ void handleKey(unsigned char key,int x, int y)
 {
 	// Gestion des évènements du clavier.
 	// Q pour quitter.
+	void annuleCoup(void);
 	switch(key)
 	{
+		case 'a': annuleCoup();break;
+		case 'A': annuleCoup();break;
 		case 'q':
 		case 'Q':
 		exit(0);
@@ -258,26 +308,113 @@ void annuleCoup(void)
 	// Tente d'annuler le dernier coup joué.
 	bool* isCoupAnnule= new bool;
 	int* i=new int;
-	int* j=new int;
-	maPartie.annuleCoup(isCoupAnnule,i,j);
+	int* k=new int;
+	maPartie.annuleCoup(isCoupAnnule,i,k);
 	if(*isCoupAnnule)
 	{
-		couleurCase[*i][*j]='N';
+		couleurCase[*i][*k]='N';
 		*partieEnCours=true;
 		glutPostRedisplay() ;
 	}
 	else cout<<"Aucun coup a annuler."<<endl;
 	delete isCoupAnnule;
 	delete i;
-	delete j;
+	delete k;
 }
 
 void nouvellePartie(void)
 {
+	// Crée une nouvelle partie.
+	// Permet le choix du type de joueur.
 	// Ramène une partie au début.
+
 	int n=maPartie.getNbCoup();
 	for(int i=n;i>0;i--)
 	{
 		annuleCoup();
 	}
+}
+
+void sauvegarde(void)
+{
+	// Fonction qui sauvegarde la partie en cours.
+	string nomFichier;								// Fichier dans lequel on sauvegarde.
+	vector<int> vecteur=maPartie.getHistorique();	// Historique des coups.
+	int premier=maPartie.getTrait();				// Joueur qui a débuté la partie.
+	int nbCoup=maPartie.getNbCoup();				// Nombre de coups joués.
+
+	if(nbCoup%2==1)premier=(1+premier)%2;
+	cout<<"Nom de la partie a sauvegarder : ";
+	cin>>nomFichier;
+	ofstream fichier(nomFichier+".txt");
+    if (!fichier)
+    {
+        cerr <<"Erreur\n";
+        return;
+    }
+	else
+	{
+		fichier<<nbCoup<<"\n";
+		fichier<<premier<<"\n";
+		for(int i=0;i<nbCoup;i++)fichier<<vecteur[i]<<"\n";
+		fichier.close();
+    }
+}
+
+void chargerPartie(void)
+{
+	// Fonction qui charge une partie depuis un fichier
+	// texte dans le répertoire local.
+	string nomFichier;		// Fichier dans lequel on sauvegarde.
+	vector<int> vecteur;	// Historique des coups.
+	string premier;			// Joueur qui a débuté la partie.
+	int nbCoup;				// Nombre de coups joués.
+	int pos;				// Position à mettre dans l'historique.
+	bool* ok= new bool;		// vrai si coup possible
+	int* ligne=new int;		// ligne (hauteur) du coup
+	int* j=new int;			// numéro du joueur courant
+	*ok=true;
+
+	// On recupère dans le fichier le nombre de coups joués,
+	// la couleur du joueur qui a débuté la partie et
+	// l'historique des coups.
+	cout<<"Nom de la partie a charger : ";
+	cin>>nomFichier;
+	ifstream fichier(nomFichier+".txt",ios::in);
+    if(fichier)
+    {
+		fichier>>nbCoup;
+		cout<<nbCoup<<endl;
+		fichier>>premier;
+		cout<<premier<<endl;
+		for(int i=0;i<nbCoup;i++)
+		{
+			fichier>>pos;
+			vecteur.push_back(pos);
+			cout<<vecteur[i]<<endl;
+		}
+		fichier.close();
+    }
+    else cerr<<"Erreur"<<endl;
+
+	// On rejoue la partie jusqu'au dernier coup !
+	nouvellePartie();
+	for(int i=0;i<nbCoup;i++)
+	{
+		// il faut trouver le numero de colonne
+		// correspondant à chaque case
+		pos=(int)(vecteur[i]-vecteur[i]%LARGEUR)/LARGEUR;
+		maPartie.joueUnCoup(partieEnCours,&pos,ligne,ok,j);
+		if(*ok)
+		{
+			if (*j==0)couleurCase[*ligne][pos]='R';
+			if (*j==1)couleurCase[*ligne][pos]='J';
+		}
+	}
+	// On réaffiche tout à la fin.
+	glutPostRedisplay();	
+	// Nettoyage
+	delete ok;
+	delete ligne;
+	delete j;
 }
